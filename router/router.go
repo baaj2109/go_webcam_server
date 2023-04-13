@@ -2,14 +2,16 @@ package router
 
 import (
 	"github.com/baaj2109/webcam_server/api"
+	"github.com/baaj2109/webcam_server/middleware"
 	"github.com/gin-gonic/gin"
 )
 
 func InitRouter(engine *gin.Engine) {
-	// group1 := engine.Group("/web")
-	// {
-	// 	group1.GET("/home", api.GetHome)
-	// }
+
+	// engine.Use(gin.Logger())
+	engine.Use(middleware.LoggerToFile())
+	engine.Use(gin.Recovery())
+
 	engine.GET("/home", api.GetHome)
 
 	engine.GET("/start_webcam", api.StartWebCam)
