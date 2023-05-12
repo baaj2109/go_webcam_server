@@ -6,6 +6,7 @@ import (
 
 	"github.com/baaj2109/webcam_server/global"
 	"github.com/baaj2109/webcam_server/model"
+	"github.com/baaj2109/webcam_server/settings"
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,7 +27,6 @@ func Login(c *gin.Context) {
 	}
 	auth.Password = global.Md5(auth.Password)
 	// passwd = global.Md5(passwd)
-
 	// auth := auth{Email: email, Password: passwd}
 	if !model.CheckAuth(auth.Email, auth.Password) {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -35,16 +35,22 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("passwd", auth.Password, 3600, "/", "localhost", false, false)
-	c.SetCookie("email", auth.Email, 3600, "/", "localhost", false, false)
+	// c.SetCookie("passwd", auth.Password, 3600, "/", "localhost", false, false)
+	// c.SetCookie("email", auth.Email, 3600, "/", "localhost", false, false)
+	token, err := GenerateToken(auth.Email, auth.Password, settings.Conf.JWTConfig)
+	if err != nil {
+		model.Cookie.Set(c, token)
+	}
+
 	c.JSON(http.StatusAccepted, gin.H{
 		"message": "login successfully",
 	})
 }
 
 func Logout(c *gin.Context) {
-	c.SetCookie("passwd", "", -1, "/", "localhost", false, false)
-	c.SetCookie("email", "", -1, "/", "localhost", false, false)
+	// c.SetCookie("passwd", "", -1, "/", "localhost", false, false)
+	// c.SetCookie("email", "", -1, "/", "localhost", false, false)
+	model.Cookie.Del(c)
 }
 
 func Register(c *gin.Context) {
@@ -55,7 +61,7 @@ func Register(c *gin.Context) {
 		})
 		return
 	}
-	auth.Password = global.Md5(auth.Password)
+	// auth.Password = global.Md5(auth.Password)
 	if model.CheckAuth(auth.Email, auth.Password) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "failed to register, account already exist",
@@ -63,12 +69,19 @@ func Register(c *gin.Context) {
 		return
 	}
 	ip := strings.Split(c.Request.RemoteAddr, ":")[0]
+	hash, err := global.HashPassword(auth.Password)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "failed to register, failed to hash password",
+		})
+		return
+	}
 	user := model.User{
 		Email:    auth.Email,
-		Password: auth.Password,
+		Password: hash,
 		LastIP:   ip,
 	}
-	err := global.Db.Create(user).Error
+	err = global.SQLLiteDb.Create(user).Error
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "failed to register, failed set user to database",

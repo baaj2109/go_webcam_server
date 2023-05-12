@@ -4,11 +4,16 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/baaj2109/webcam_server/global"
 	"github.com/baaj2109/webcam_server/router"
+	"github.com/baaj2109/webcam_server/settings"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+
+	initSettings()
+
 	engine := gin.Default()
 	// err := engine.Run(":8080")
 	router.InitRouter(engine)
@@ -19,4 +24,28 @@ func main() {
 	}
 	engine.RunListener(listener)
 
+}
+
+func initSettings() {
+	if err := settings.Init(); err != nil {
+		fmt.Printf("load config failed, err:%v\n", err)
+		return
+	}
+
+	// if err := logger.Init(settings.Conf.LogConfig, settings.Conf.Mode); err != nil {
+	// 	fmt.Printf("init logger failed, err:%v\n", err)
+	// 	return
+	// }
+	if err := global.InitMySqlDb(settings.Conf.MySqlConfig); err != nil {
+		fmt.Printf("init mysql failed, err:%v\n", err)
+		return
+	}
+	defer global.MySQLDb.Close()
+
+	if err := global.InitRedisDb(settings.Conf.RedisConfig); err != nil {
+		fmt.Printf("init redis failed, err:%v\n", err)
+		return
+	}
+
+	defer global.RedisDb.Close()
 }
