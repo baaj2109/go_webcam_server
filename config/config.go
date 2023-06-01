@@ -1,4 +1,4 @@
-package settings
+package config
 
 import (
 	"fmt"
@@ -55,7 +55,7 @@ type JWTConfig struct {
 	Issuer string `mapsturcture:"issuer"`
 }
 
-func Init() error {
+func InitConfig() error {
 	// read config
 	viper.SetConfigName("config/app.yaml")
 	viper.WatchConfig()

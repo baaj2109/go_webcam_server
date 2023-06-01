@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/baaj2109/webcam_server/settings"
+	"github.com/baaj2109/webcam_server/config"
 	"github.com/go-redis/redis/v8"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/sqlite" // Sqlite driver based on GO
@@ -39,7 +39,7 @@ func InitSQLLiteDb() {
 	sqlDB.SetConnMaxLifetime(10 * time.Second)
 }
 
-func InitMySqlDb(cfg *settings.MySqlConfig) error {
+func InitMySqlDb(cfg *config.MySqlConfig) error {
 	logger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
 		logger.Config{
@@ -69,7 +69,7 @@ func InitMySqlDb(cfg *settings.MySqlConfig) error {
 	return nil
 }
 
-func InitRedisDb(cfg *settings.RedisConfig) error {
+func InitRedisDb(cfg *config.RedisConfig) error {
 	RedisDb := redis.NewClient(&redis.Options{
 		Addr:     cfg.Host,
 		Password: cfg.Password, // no password set

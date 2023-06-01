@@ -1,10 +1,10 @@
-package api
+package utils
 
 import (
 	"time"
 
+	"github.com/baaj2109/webcam_server/config"
 	"github.com/baaj2109/webcam_server/global"
-	"github.com/baaj2109/webcam_server/settings"
 	"github.com/golang-jwt/jwt"
 )
 
@@ -14,7 +14,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-func GenerateToken(username, password string, cfg *settings.JWTConfig) (string, error) {
+func GenerateToken(username, password string, cfg *config.JWTConfig) (string, error) {
 	now := time.Now()
 	expireTime := now.Add(time.Minute * 15).Unix()
 	claims := Claims{
@@ -30,7 +30,7 @@ func GenerateToken(username, password string, cfg *settings.JWTConfig) (string, 
 	return token, err
 }
 
-func ParseToken(token string, cfg *settings.JWTConfig) (*Claims, error) {
+func ParseToken(token string, cfg *config.JWTConfig) (*Claims, error) {
 	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return cfg.Secret, nil
 	})

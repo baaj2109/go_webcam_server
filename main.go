@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/baaj2109/webcam_server/config"
 	"github.com/baaj2109/webcam_server/global"
 	"github.com/baaj2109/webcam_server/router"
-	"github.com/baaj2109/webcam_server/settings"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,7 +27,7 @@ func main() {
 }
 
 func initSettings() {
-	if err := settings.Init(); err != nil {
+	if err := config.InitConfig(); err != nil {
 		fmt.Printf("load config failed, err:%v\n", err)
 		return
 	}
@@ -36,13 +36,13 @@ func initSettings() {
 	// 	fmt.Printf("init logger failed, err:%v\n", err)
 	// 	return
 	// }
-	if err := global.InitMySqlDb(settings.Conf.MySqlConfig); err != nil {
+	if err := global.InitMySqlDb(config.Conf.MySqlConfig); err != nil {
 		fmt.Printf("init mysql failed, err:%v\n", err)
 		return
 	}
 	defer global.MySQLDb.Close()
 
-	if err := global.InitRedisDb(settings.Conf.RedisConfig); err != nil {
+	if err := global.InitRedisDb(config.Conf.RedisConfig); err != nil {
 		fmt.Printf("init redis failed, err:%v\n", err)
 		return
 	}

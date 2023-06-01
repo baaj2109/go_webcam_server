@@ -5,3 +5,21 @@ jwt:
   expires-time: 7d
   buffer-time: 1d
   issuer: webcam_server_c1ay
+
+mysql:
+  host: 127.0.0.1
+  port: 3306
+  user: root
+  password: root
+  database: webcam
+  max-idle-conns: 5
+  max-open-conns: 20
+  max-life-time: 7d
+
+redis:
+  host: 127.0.0.1
+  port: 6379
+  password: root
+  pool-size: 10
+  min-idle-conns: 5
+  

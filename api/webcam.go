@@ -17,6 +17,7 @@ var (
 	closeChannel = make(chan bool)
 	Window       *gocv.Window
 	DeviceCount  int = 0
+	CurrentFrame gocv.Mat
 )
 
 func init() {
@@ -107,6 +108,7 @@ func StartWebCam(c *gin.Context) {
 			if frame.Empty() {
 				continue
 			}
+			CurrentFrame = frame
 			Window.IMShow(frame)
 			Window.WaitKey(1)
 			Fps++

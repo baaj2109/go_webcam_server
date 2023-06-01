@@ -16,10 +16,8 @@ type User struct {
 	Status   int
 }
 
-func CheckUser(email, passwd string) bool {
-	// var user User
+func IsUserExist(email, passwd string) bool {
 	users := []User{}
-	global.SQLLiteDb.Select("id").Where("email == ? AND Password == ?", email, passwd).Find(&users)
-
+	global.SQLLiteDb.Where("email == ? AND Password == ?", email, passwd).Find(&users)
 	return len(users) > 0
 }

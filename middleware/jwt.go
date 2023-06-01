@@ -4,12 +4,13 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/baaj2109/webcam_server/api"
-	"github.com/baaj2109/webcam_server/settings"
+	"github.com/baaj2109/webcam_server/config"
+	"github.com/baaj2109/webcam_server/utils"
+
 	"github.com/gin-gonic/gin"
 )
 
-func JWT(cfg *settings.JWTConfig) gin.HandlerFunc {
+func JWT(cfg *config.JWTConfig) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 		token := ctx.Query("token")
@@ -23,7 +24,7 @@ func JWT(cfg *settings.JWTConfig) gin.HandlerFunc {
 			return
 		} else {
 			// 解析token
-			claims, err := api.ParseToken(token, cfg)
+			claims, err := utils.ParseToken(token, cfg)
 			if err != nil {
 				ctx.JSON(http.StatusOK, gin.H{
 					"status": -1,

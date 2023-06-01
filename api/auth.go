@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/baaj2109/webcam_server/config"
 	"github.com/baaj2109/webcam_server/global"
 	"github.com/baaj2109/webcam_server/model"
-	"github.com/baaj2109/webcam_server/settings"
+	"github.com/baaj2109/webcam_server/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -37,7 +38,7 @@ func Login(c *gin.Context) {
 
 	// c.SetCookie("passwd", auth.Password, 3600, "/", "localhost", false, false)
 	// c.SetCookie("email", auth.Email, 3600, "/", "localhost", false, false)
-	token, err := GenerateToken(auth.Email, auth.Password, settings.Conf.JWTConfig)
+	token, err := utils.GenerateToken(auth.Email, auth.Password, config.Conf.JWTConfig)
 	if err != nil {
 		model.Cookie.Set(c, token)
 	}
