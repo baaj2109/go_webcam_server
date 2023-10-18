@@ -9,16 +9,16 @@ import (
 )
 
 type Claims struct {
-	Username string `json:"username"`
+	Email    string `json:"username"`
 	Password string `json:"password"`
 	jwt.StandardClaims
 }
 
-func GenerateToken(username, password string, cfg *config.JWTConfig) (string, error) {
+func GenerateToken(email, password string, cfg *config.JWTConfig) (string, error) {
 	now := time.Now()
 	expireTime := now.Add(time.Minute * 15).Unix()
 	claims := Claims{
-		Username: global.Md5(username),
+		Email:    email,
 		Password: global.Md5(password),
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expireTime,

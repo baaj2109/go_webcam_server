@@ -10,28 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func main() {
-
-	initSettings()
-
-	engine := gin.Default()
-	// err := engine.Run(":8080")
-	router.InitRouter(engine)
-	listener, err := net.Listen("tcp", ":8080")
-	if nil != err {
-		fmt.Println(err)
-		return
-	}
-	engine.RunListener(listener)
-
-}
-
-func initSettings() {
+func init() {
 	if err := config.InitConfig(); err != nil {
 		fmt.Printf("load config failed, err:%v\n", err)
 		return
 	}
-
 	// if err := logger.Init(settings.Conf.LogConfig, settings.Conf.Mode); err != nil {
 	// 	fmt.Printf("init logger failed, err:%v\n", err)
 	// 	return
@@ -48,4 +31,18 @@ func initSettings() {
 	}
 
 	defer global.RedisDb.Close()
+}
+
+func main() {
+
+	engine := gin.Default()
+	// err := engine.Run(":8080")
+	router.InitRouter(engine)
+	listener, err := net.Listen("tcp", ":8080")
+	if nil != err {
+		fmt.Println(err)
+		return
+	}
+	engine.RunListener(listener)
+
 }

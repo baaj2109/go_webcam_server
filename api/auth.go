@@ -91,5 +91,4 @@ func Register(c *gin.Context) {
 	c.JSON(http.StatusAccepted, gin.H{
 		"message": "create user successfully",
 	})
-
 }
